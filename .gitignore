@@ -7,8 +7,24 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Archivos compilados de TypeScript/Vue
+*.js
+!vite.config.js          # Excepción: si usas JS puro (pero tú usas TS)
+!vitest.config.js
+
+# Compilados específicos
+src/**/*.vue.js
+src/**/*.ts.js
+src/**/*.d.ts
+tsconfig.tsbuildinfo
+vite.config.js
+capacitor.config.js
+
+# node_modules
 node_modules
+dist/
 dist
+www/
 dist-ssr
 *.local
 
