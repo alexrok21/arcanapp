@@ -1,0 +1,72 @@
+@font-face {
+   font-family: 'Press Start 2P';
+   src: url('@/assets/fonts/PressStart2P-Regular.ttf') format('truetype');
+   font-weight: normal;
+   font-style: normal;
+ }
+
+/* Reset básico para evitar márgenes y paddings no deseados */
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+@keyframes moveBackground {
+   from {
+      background-position: 0 0;
+   }
+
+   to {
+      background-position: -100vw 0;
+   }
+}
+
+html, body {
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  font-family: 'Press Start 2P', monospace;
+  background: #000;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: url('@/assets/images/arcana_bg.png') repeat-x bottom;
+  background-size: 90% auto;
+  background-position: -5px 0;
+  animation: moveBackground 80s linear infinite;
+
+  /* Crucial: cubre el área segura inferior */
+  padding-bottom: env(safe-area-inset-bottom);
+  position: relative;
+  z-index: 1;
+
+  /* Asegura que el fondo llegue al borde */
+  background-repeat: repeat-x;
+  background-attachment: fixed;
+}
+
+/* Ajustes específicos para dispositivos móviles */
+@media (max-width: 768px) {
+  #app {
+    background-size: 313% auto;
+    animation-duration: 130s;
+    padding-bottom: env(safe-area-inset-bottom, 20px); /* Ajuste más suave */
+  }
+
+  /* Asegura que el contenido no se corte */
+  .home-container,
+  .draw-container {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+}
