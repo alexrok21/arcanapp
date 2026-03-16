@@ -74,3 +74,13 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Archivos compilados de TypeScript (excepto configs reales en JS)
+*.js
+!vite.config.js
+!vitest.config.js
+!public/**/*.js
+
+# Gradle wrapper JAR (se descarga automáticamente)
+gradle-wrapper.jar
+!gradle-wrapper.properties

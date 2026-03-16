@@ -56,8 +56,10 @@
                <p class="share-text">{{ shortMeaning }}</p>
 
                <div class="share-footer">
-                  <span class="app-name">Arcan</span>
-                  <span class="app-name app-name-highlight">App</span>
+                  <span class="app-name-wrapper">
+                     <span class="app-name-base">Arcan</span>
+                     <span class="app-name-highlight">App</span>
+                  </span>
                   <span class="invite-text">¿Qué intuye el universo para ti?</span>
                </div>
 
@@ -273,5 +275,37 @@ const goBack = () => {
 
 .share-close:hover {
    transform: scale(1.2);
+}
+
+/* Wrapper para "ArcanApp" completo */
+.app-name-wrapper {
+   display: inline-flex;
+   align-items: center;
+   white-space: nowrap;
+   /* ✅ Evita que se rompa en dos líneas */
+   gap: 0;
+   /* Sin espacio entre "Arcan" y "App" */
+}
+
+/* Estilo para "Arcan" (azul cian) */
+.app-name-base {
+   color: #5EF7F7;
+   /* Azul cian brillante */
+   font-family: 'Press Start 2P', monospace;
+   font-weight: bold;
+   text-shadow: 1px 1px 0px #000;
+   letter-spacing: 1px;
+   line-height: 1;
+}
+
+/* Estilo para "App" (dorado) */
+.app-name-highlight {
+   color: #FFD700;
+   /* Dorado brillante */
+   font-family: 'Press Start 2P', monospace;
+   font-weight: bold;
+   text-shadow: 1px 1px 0px #000;
+   letter-spacing: 1px;
+   line-height: 1;
 }
 </style>
