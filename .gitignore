@@ -7,34 +7,70 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Archivos compilados de TypeScript/Vue
-*.js
-!vite.config.js          # Excepción: si usas JS puro (pero tú usas TS)
-!vitest.config.js
+# Node modules
+node_modules/
 
-# Compilados específicos
+# Build outputs
+dist/
+www/
+out/
+dist-ssr/
+*.local
+
+# Android
+android/app/build/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/*.iml
+android/gradle-app.setting
+android/gradlew
+android/gradlew.bat
+android/gradle/wrapper/gradle-wrapper.jar
+
+# iOS
+ios/Pods/
+ios/*.xcworkspace
+ios/build/
+
+# Capacitor
+capacitor.config.json
+capacitor.settings.json
+
+# TypeScript compiled files
+*.js
+!vite.config.js
+!vitest.config.js
+!public/**/*.js
+
+# TypeScript build artifacts
+*.tsbuildinfo
+*.d.ts
+*.map
+
+# Source files compiled from Vue/TS
 src/**/*.vue.js
 src/**/*.ts.js
-src/**/*.d.ts
-tsconfig.tsbuildinfo
-vite.config.js
-capacitor.config.js
 
-# node_modules
-node_modules
-dist/
-dist
-www/
-dist-ssr
-*.local
+# Environment variables
+.env
+.env.local
+.env.*.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
