@@ -1,5 +1,17 @@
 <template>
    <div class="home-container">
+      <!-- Contador de tiradas restantes -->
+      <div v-if="!isPremium" class="draws-counter">
+         <span class="counter-icon">🔮</span>
+         <span class="counter-text">{{ drawsRemaining }} tiradas hoy</span>
+      </div>
+      
+      <!-- Badge premium -->
+      <div v-if="isPremium" class="premium-badge">
+         <span class="premium-icon">⭐</span>
+         <span class="premium-label">PREMIUM</span>
+      </div>
+      
       <div class="cards">
          <img :src="cardBack1" alt="Tarjeta Naranja" class="card card-orange" @click="goToDraw('orange')">
          <img :src="cardBack2" alt="Tarjeta Azul" class="card card-blue" @click="goToDraw('blue')">
@@ -8,12 +20,18 @@
       <div class="text">
          <p>{{ selectedPhrase }}</p>
       </div>
+      
+      <!-- Botón para activar premium (solo para testing) -->
+      <button v-if="!isPremium" class="test-premium-button" @click="activatePremium">
+         Activar Premium (Test)
+      </button>
    </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { useTarotStore } from '@/store/tarot'
 import { LocalNotifications } from '@capacitor/local-notifications'
 
@@ -25,6 +43,18 @@ import '@/assets/styles/home.css'
 
 const router = useRouter()
 const tarotStore = useTarotStore()
+const { drawsRemaining, isPremium } = storeToRefs(tarotStore)
+
+// Cargar datos del localStorage al montar
+onMounted(() => {
+   tarotStore.loadFromLocalStorage()
+})
+
+const activatePremium = () => {
+   // Esto sería reemplazado por la lógica real de compra
+   tarotStore.setPremium(true)
+   alert('¡Premium activado! Ahora tienes tiradas ilimitadas.')
+}
 
 const requestNotificationPermission = async () => {
    const permStatus = await LocalNotifications.requestPermissions()
