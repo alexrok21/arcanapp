@@ -1,32 +1,27 @@
-import '@/assets/styles/main.css'
+import "@/assets/styles/main.css";
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import { SplashScreen } from "@capacitor/splash-screen";
+import { PushNotifications } from "@capacitor/push-notifications";
+import App from "./App.vue";
+import router from "./router";
+import { useTarotStore } from "@/store/tarot";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { PushNotifications } from '@capacitor/push-notifications'
-import { SplashScreen } from '@capacitor/splash-screen'
+const pinia = createPinia();
+const app = createApp(App);
+app.use(pinia);
+app.use(router);
 
-import App from './App.vue'
-import router from './router'
-import { useTarotStore } from '@/store/tarot'
+router.isReady().then(async () => {
+  const tarotStore = useTarotStore();
+  tarotStore.resetState();
 
-// Creamos la aplicación y el store
-const pinia = createPinia()
-const app = createApp(App)
-app.use(pinia)
-app.use(router)
+  if (router.currentRoute.value.path !== "/home") {
+    router.push("/home");
+  }
 
-// Esperamos a que el router esté listo
-router.isReady().then(() => {
-    const tarotStore = useTarotStore()
+  // Ocultá la splash DESPUÉS de que el router esté listo
+  await SplashScreen.hide();
+});
 
-    // Reiniciamos el estado al cargar la página
-    tarotStore.resetState()
-
-    // Si la ruta no es '/home', redirigimos
-    if (router.currentRoute.value.path !== '/home') {
-        router.push('/home')
-    }
-})
-
-// Montamos la aplicación
-app.mount('#app')
+app.mount("#app");

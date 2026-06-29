@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Suprime la Android 12 SplashScreen API, usa windowBackground propio -->
+    <style name="AppTheme.NoActionBarLaunch" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:windowIsTranslucent">false</item>
+    </style>
+</resources>

@@ -1,26 +1,28 @@
-import { CapacitorConfig } from '@capacitor/cli'
+import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: 'com.arcanapp.app',
-  appName: 'Arcanapp',
-  webDir: 'dist',
+  appId: "com.arcanapp.app",
+  appName: "Arcanapp",
+  webDir: "dist",
   android: {
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 3000,
+      launchShowDuration: 0,
       launchAutoHide: true,
-      backgroundColor: "#FF8f0a0a",
+      androidSplashResourceName: "splash",
       androidScaleType: "CENTER_CROP",
       showSpinner: false,
-      imageName: "splash"
+      splashFullScreen: true,
+      splashImmersive: true,
+      backgroundColor: "#000000",
     },
     LocalNotifications: {
-      smallIcon: 'ic_stat_arcana',
-      iconColor: '#FFFFFF'
-    }
-  }
-}
+      smallIcon: "ic_stat_arcana",
+      iconColor: "#FFFFFF",
+    },
+  },
+};
 
-export default config
+export default config;
