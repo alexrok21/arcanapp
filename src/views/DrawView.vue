@@ -77,6 +77,39 @@
          </div>
       </Transition>
 
+      <!-- Modal de límite de tiradas diarias -->
+      <Transition name="fade">
+         <div v-if="showLimitModal" class="limit-modal-overlay" @click.self="closeLimitModal">
+            <div class="limit-modal-content">
+               <h2 class="limit-title">✨ Límite Diario Alcanzado ✨</h2>
+               
+               <p class="limit-text">
+                  Has usado tus 3 tiradas gratuitas de hoy. 
+                  El universo descansa hasta mañana.
+               </p>
+               
+               <div class="limit-icon">🌙</div>
+               
+               <div class="limit-actions">
+                  <button class="limit-button premium-button" @click="goToPremium">
+                     <span class="button-bg-premium"></span>
+                     <span class="button-text-premium">⭐ Obtener Tiradas Ilimitadas</span>
+                  </button>
+                  
+                  <button class="limit-button close-button" @click="closeLimitModal">
+                     <span>Volver más tarde</span>
+                  </button>
+               </div>
+               
+               <div v-if="!isPremium" class="premium-info">
+                  <p class="premium-benefit">✅ Tiradas ilimitadas</p>
+                  <p class="premium-benefit">✅ Sin esperas diarias</p>
+                  <p class="premium-benefit">✅ Acceso prioritario a nuevas funciones</p>
+               </div>
+            </div>
+         </div>
+      </Transition>
+
    </div>
 </template>
 
@@ -85,7 +118,7 @@ import { Share } from '@capacitor/share'
 import { Filesystem, Directory } from '@capacitor/filesystem'
 import html2canvas from 'html2canvas'
 import { Capacitor } from '@capacitor/core'
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useTarotStore } from '@/store/tarot'
@@ -103,7 +136,7 @@ const cardImage = {
 }
 
 const tarotStore = useTarotStore()
-const { selectedCard, revealedCard } = storeToRefs(tarotStore)
+const { selectedCard, revealedCard, drawsRemaining, canDraw, isPremium } = storeToRefs(tarotStore)
 const router = useRouter()
 
 const showText = ref(true)
@@ -111,12 +144,27 @@ const revealed = ref(false)
 const revealedImage = ref('')
 const meaningText = ref('')
 const showMeaning = ref(false)
+const showLimitModal = ref(false)
+
+// Cargar datos del localStorage al montar el componente
+onMounted(() => {
+   tarotStore.loadFromLocalStorage()
+})
 
 const revealCard = () => {
    if (revealed.value) return
+   
+   // Verificar si puede tirar
+   if (!canDraw.value) {
+      showLimitModal.value = true
+      return
+   }
 
    showText.value = false
    showMeaning.value = false
+
+   // Incrementar contador de tiradas diarias
+   tarotStore.incrementDailyDraw()
 
    // Espera un momento antes de revelar la carta
    setTimeout(() => {
@@ -137,6 +185,16 @@ const revealCard = () => {
          }, 2000)
       }, 100) // retraso mínimo para que el texto aparezca primero
    }, 1000) // retraso antes de revelar la carta
+}
+
+const closeLimitModal = () => {
+   showLimitModal.value = false
+}
+
+const goToPremium = () => {
+   // Aquí iría la lógica para ir a la pantalla de compra premium
+   console.log('Ir a pantalla premium')
+   closeLimitModal.value = false
 }
 
 // Modal
@@ -307,5 +365,162 @@ const goBack = () => {
    text-shadow: 1px 1px 0px #000;
    letter-spacing: 1px;
    line-height: 1;
+}
+
+/* ========================================
+   MODAL DE LÍMITE DE TIRADAS DIARIAS
+   ======================================== */
+
+.limit-modal-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background: rgba(0, 0, 0, 0.85);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: 1000;
+   padding: 1rem;
+}
+
+.limit-modal-content {
+   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+   border: 2px solid #FFD700;
+   border-radius: 20px;
+   padding: 2rem;
+   max-width: 400px;
+   width: 100%;
+   text-align: center;
+   box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+   animation: modal-pop-in 0.3s ease-out;
+}
+
+@keyframes modal-pop-in {
+   0% {
+      transform: scale(0.8);
+      opacity: 0;
+   }
+   100% {
+      transform: scale(1);
+      opacity: 1;
+   }
+}
+
+.limit-title {
+   font-family: 'Press Start 2P', monospace;
+   font-size: 1.2rem;
+   color: #FFD700;
+   margin-bottom: 1.5rem;
+   text-shadow: 2px 2px 0px #000;
+   line-height: 1.4;
+}
+
+.limit-text {
+   font-family: 'Press Start 2P', monospace;
+   font-size: 0.7rem;
+   color: #ffffff;
+   margin-bottom: 1.5rem;
+   line-height: 1.6;
+   text-shadow: 1px 1px 0px #000;
+}
+
+.limit-icon {
+   font-size: 3rem;
+   margin: 1.5rem 0;
+   animation: moon-glow 2s ease-in-out infinite;
+}
+
+@keyframes moon-glow {
+   0%, 100% {
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+   }
+   50% {
+      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+   }
+}
+
+.limit-actions {
+   display: flex;
+   flex-direction: column;
+   gap: 1rem;
+   margin-top: 1.5rem;
+}
+
+.limit-button {
+   font-family: 'Press Start 2P', monospace;
+   border: none;
+   cursor: pointer;
+   transition: all 0.2s ease;
+   position: relative;
+   overflow: hidden;
+}
+
+.premium-button {
+   background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+   padding: 1rem 1.5rem;
+   border-radius: 10px;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+.premium-button:hover {
+   transform: scale(1.05);
+   box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+}
+
+.premium-button:active {
+   transform: scale(0.98);
+}
+
+.button-text-premium {
+   color: #1a1a2e;
+   font-size: 0.8rem;
+   text-shadow: none;
+   font-weight: bold;
+}
+
+.close-button {
+   background: transparent;
+   border: 2px solid #5EF7F7;
+   color: #5EF7F7;
+   padding: 0.8rem 1.5rem;
+   border-radius: 10px;
+   font-size: 0.7rem;
+   text-shadow: 1px 1px 0px #000;
+}
+
+.close-button:hover {
+   background: rgba(94, 247, 247, 0.1);
+   transform: scale(1.02);
+}
+
+.close-button:active {
+   transform: scale(0.98);
+}
+
+.premium-info {
+   margin-top: 1.5rem;
+   padding-top: 1.5rem;
+   border-top: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.premium-benefit {
+   font-family: 'Press Start 2P', monospace;
+   font-size: 0.6rem;
+   color: #5EF7F7;
+   margin: 0.5rem 0;
+   text-shadow: 1px 1px 0px #000;
+}
+
+/* Fade transition para el modal */
+.fade-enter-active,
+.fade-leave-active {
+   transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+   opacity: 0;
 }
 </style>
