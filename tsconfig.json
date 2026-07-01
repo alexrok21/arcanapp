@@ -3,27 +3,13 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
+    "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
-    /* Módulos */
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
-    "types": [
-      "vite/client",
-      "vue"
-    ]
+    "types": ["vite/client", "vue"]
+    // "paths" y "baseUrl" deben eliminarse
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }
