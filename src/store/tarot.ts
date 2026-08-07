@@ -1,6 +1,14 @@
 // src/store/tarot.ts
 import { defineStore } from "pinia";
 
+interface RevealedCard {
+  name: string;
+  orientation: string;
+  image: string; // Las imágenes importadas son strings en tiempo de ejecución
+  meaning: string;
+  shortMeaning: string;
+}
+
 import Fool from "@/assets/images/characters/Fool.png";
 import Magician from "@/assets/images/characters/Magician.png";
 import Priestess from "@/assets/images/characters/Priestess.png";
@@ -523,7 +531,7 @@ const cards = [
 export const useTarotStore = defineStore("tarot", {
   state: () => ({
     selectedCard: "default", // Color seleccionado
-    revealedCard: null, // Carta revelada
+    revealedCard: null as RevealedCard | null, // Carta revelada
     dailyDraws: 0, // Tiradas usadas hoy
     lastDrawDate: null as string | null, // Fecha de última tirada
     isPremium: false, // Estado premium
@@ -532,19 +540,19 @@ export const useTarotStore = defineStore("tarot", {
   getters: {
     drawsRemaining(): number {
       if (this.isPremium) return Infinity;
-      
+
       // Verificar si es un nuevo día
       const today = new Date().toDateString();
       if (this.lastDrawDate !== today) {
         return 3; // Resetear a 3 tiradas al inicio del día
       }
-      
+
       return Math.max(0, 3 - this.dailyDraws);
     },
-    
+
     canDraw(): boolean {
       return this.drawsRemaining > 0;
-    }
+    },
   },
 
   actions: {
@@ -554,20 +562,20 @@ export const useTarotStore = defineStore("tarot", {
 
     incrementDailyDraw() {
       const today = new Date().toDateString();
-      
+
       // Si es un nuevo día, resetear contador
       if (this.lastDrawDate !== today) {
         this.dailyDraws = 0;
         this.lastDrawDate = today;
       }
-      
+
       // Incrementar solo si no es premium
       if (!this.isPremium && this.dailyDraws < 3) {
         this.dailyDraws++;
         this.saveToLocalStorage();
         return true;
       }
-      
+
       return this.isPremium;
     },
 
@@ -580,21 +588,21 @@ export const useTarotStore = defineStore("tarot", {
     },
 
     loadFromLocalStorage() {
-      const saved = localStorage.getItem('tarot-premium-data');
+      const saved = localStorage.getItem("tarot-premium-data");
       if (saved) {
         try {
           const data = JSON.parse(saved);
           this.dailyDraws = data.dailyDraws || 0;
           this.lastDrawDate = data.lastDrawDate || null;
           this.isPremium = data.isPremium || false;
-          
+
           // Verificar si es un nuevo día para resetear
           const today = new Date().toDateString();
           if (this.lastDrawDate !== today) {
             this.dailyDraws = 0;
           }
         } catch (e) {
-          console.error('Error loading premium data:', e);
+          console.error("Error loading premium data:", e);
         }
       }
     },
@@ -605,7 +613,7 @@ export const useTarotStore = defineStore("tarot", {
         lastDrawDate: this.lastDrawDate,
         isPremium: this.isPremium,
       };
-      localStorage.setItem('tarot-premium-data', JSON.stringify(data));
+      localStorage.setItem("tarot-premium-data", JSON.stringify(data));
     },
 
     revealCard() {
