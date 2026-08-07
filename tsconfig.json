@@ -8,8 +8,9 @@
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["vite/client", "vue"]
-    // "paths" y "baseUrl" deben eliminarse
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve"
   },
   "include": ["src/**/*"]
 }
